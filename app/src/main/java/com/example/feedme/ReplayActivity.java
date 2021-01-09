@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 /**
  * Replay Acitvity
  * Aktywność z ekranem końca gry
@@ -27,7 +29,7 @@ public class ReplayActivity extends AppCompatActivity {
     /**
      * Na ekranie pokazuje się napis w zależnosci pozytywnego lub negatywnego zakończenia gry
      * z głownej aktywnosci przesyłana jest liczba w zależności od zakończenia i tutaj w tej zależnosci
-     * wyświetla się odpowiedni napis
+     * wyświetla się odpowiedni  oraz wyświetla się ilość zagrań w minigrę FeedActivity
      * @param savedInstanceState
      */
     @Override
@@ -38,9 +40,12 @@ public class ReplayActivity extends AppCompatActivity {
         rep = (Button) findViewById(R.id.buttonReplay);
         TextView w_l;
         w_l = (TextView) findViewById(R.id.win_los);
+        TextView i_obiad;
+        i_obiad = (TextView) findViewById(R.id.dinner_count);
 
         Intent intent =getIntent();
         int winLost = intent.getIntExtra(MainActivity.WIN_LOST, 0);
+      //  int obiadCount = intent.getIntExtra(MainActivity.OBIADY, 0);
 
         if(winLost == 0){
             w_l.setText("Piesek uciekł ponieważ nie opiekowałeś się nim :(");
@@ -49,6 +54,9 @@ public class ReplayActivity extends AppCompatActivity {
 
             w_l.setText("Wygrałeś! Piesek dorósł!");
         }
+     //   String obiadC = String.format(Locale.getDefault(), "%03f", obiadCount);
+
+     //   i_obiad.setText(obiadC);
 
         rep.setOnClickListener(new View.OnClickListener() {
             @Override

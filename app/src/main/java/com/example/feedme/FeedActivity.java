@@ -65,6 +65,7 @@ public class FeedActivity extends AppCompatActivity {
      */
     public int punkty = 0;
 
+
     private CountDownTimer boneCountdown;
     private CountDownTimer countdown;
     private static final Integer[] mImageIds =
@@ -165,8 +166,10 @@ public class FeedActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
+                int obiadCount = 0;
+                obiadCount++;
                 setResult(FeedActivity.RESULT_OK,
-                        new Intent().putExtra("punkty", punkty).putExtra("czas", feedTime));
+                        new Intent().putExtra("punkty", punkty).putExtra("iloscObiadow", obiadCount));
                 finish();
             }
         }.start();

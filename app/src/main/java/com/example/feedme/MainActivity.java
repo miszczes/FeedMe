@@ -48,9 +48,13 @@ public class MainActivity extends AppCompatActivity {
      */
     public static final String DIFFICULTY = "com.example.feedme.DIFFICULTY";
     /**
+     *
+     */
+    public static final String OBIADY = "com.example.feedme.OBIADY";
+    /**
      * skala spadku wszystkich potrzeb zwierzątka
      */
-    float skala = 0.005f;
+    float skala = 1f;
     /**
      * początkowa wartość głodu
      */
@@ -77,6 +81,10 @@ public class MainActivity extends AppCompatActivity {
      * Początkowa wartość posiłku
      */
     int obiad = 0;
+    /**
+     * ilość zagrań w minigrę
+     */
+    int obiad_count = 0;
     /**
      * text wiev z głównym licznikiem czasu
      */
@@ -283,6 +291,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 String obiadCountFormatted = String.format(Locale.getDefault(), "%02d", obiad);
                 obiadTextView.setText(obiadCountFormatted);
+                obiad_count = obiad_count + data.getIntExtra("iloscObiadow", 0);
 
             }
         }
@@ -367,13 +376,13 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Zmniejszanie, i lub powiększanie poszczególych parametrów podczas działania timera
-     * skala - paramter o ktory zmniejszane lub zwiększane są pozostałe parametry
-     * glod - parametr głodu zmniejszany podczas działania timera
-     * entertainment - parametr zabawy zmiejszany podczas działania timera
-     * sleeping -  parametr sprawdzający czy zwierzątko śpi
-     * sleep - jeśli śpi ten parametr maleje wraz ze skalą; jeśli nie śpi parametr rośnie wraz ze skalą
-     * pet_image - zmienna odpowiedzialna za ustawienie nieśpiącego obrazka pieska
-     * happy -  parametr zmiejszający się szybciej wraz ze skalą oraz im mniejsze są pozostałe parametry wraz z działaniem timera
+     * //skala - paramter o ktory zmniejszane lub zwiększane są pozostałe parametry
+     * //glod - parametr głodu zmniejszany podczas działania timera
+     * //entertainment - parametr zabawy zmiejszany podczas działania timera
+     * //sleeping -  parametr sprawdzający czy zwierzątko śpi
+     * //sleep - jeśli śpi ten parametr maleje wraz ze skalą; jeśli nie śpi parametr rośnie wraz ze skalą
+     * //pet_image - zmienna odpowiedzialna za ustawienie nieśpiącego obrazka pieska
+     * //happy -  parametr zmiejszający się szybciej wraz ze skalą oraz im mniejsze są pozostałe parametry wraz z działaniem timera
      */
     public void zasady(){
         if(glod - skala <= 0){
@@ -393,7 +402,12 @@ public class MainActivity extends AppCompatActivity {
                 updateCountDownText();
             }else sleep = sleep + skala * 0.5f;
         }
-        happy = happy - skala * (((100f - glod)/100)+((100f - entertainment)/100)+((100f - sleep)/100));
+        if(happy - skala * (((100f - glod)/100)+((100f - entertainment)/100)+((100f - sleep)/100)) <=0)
+        {
+            happy = 0;
+        }else {
+            happy = happy - skala * (((100f - glod) / 100) + ((100f - entertainment) / 100) + ((100f - sleep) / 100));
+        }
     }
 
     /**
@@ -452,7 +466,7 @@ public class MainActivity extends AppCompatActivity {
         entertainment = 100;
         sleep = 100;
         happy = 100;
-        //dinner_count = 0;
+        obiad_count = 0;
        // obiad = 0;
         consent = 0;
         mButtonStartPause.setVisibility(View.VISIBLE);
@@ -553,7 +567,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putFloat("closeglod", c_glod);
         editor.putFloat("closeenter", entertainment);
         editor.putFloat("closesleep", sleep);
-      //  editor.putInt("obiadGra", obiad);
+        editor.putInt("iloscobiad", obiad_count);
 
         //Log.v(TAG, "c_hidden: " + hidden);
 
@@ -589,7 +603,7 @@ public class MainActivity extends AppCompatActivity {
        // boolean c_hidden = prefs.getBoolean("ukryte", true);
         float c_happy = prefs.getFloat("happi", 100);
 
-       // int c_obiad = prefs.getInt("obiadGra", 0);
+        obiad_count = prefs.getInt("iloscobiad", 0);
 
       //  Log.v(TAG, "obiad: " + c_obiad);
        // glod = glod + c_obiad;
@@ -629,7 +643,11 @@ public class MainActivity extends AppCompatActivity {
                     } else sleep = (c_sleep) - ((timePassed) * (skala));        //
                 }                                                               //
             }
-            happy = c_happy - (skala * (((100f - glod)/100)+((100f - entertainment)/100)+((100f - sleep)/100))*timePassed);
+            if (c_happy - (skala * (((100f - glod)/100)+((100f - entertainment)/100)+((100f - sleep)/100))*timePassed) <= 0){
+                happy = 0;
+            }else {
+                happy = c_happy - (skala * (((100f - glod) / 100) + ((100f - entertainment) / 100) + ((100f - sleep) / 100)) * timePassed);
+            }
             sleeping = c_sleeping;
             //hidden = c_hidden;
             Log.v(TAG, "c_hidden: " + hidden);
@@ -645,12 +663,13 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 startTimer();
             }
-            if (timePassed > 110){
+            if (timePassed > 40){
                // pauseTimer();
 
                 mTimerRunning =false;
                 Intent intentReplay = new Intent(this, ReplayActivity.class);
                 intentReplay.putExtra(WIN_LOST, 0);
+                //intentReplay.putExtra(OBIADY, obiad_count);
                 startActivityForResult(intentReplay, 2);
             }
         }else if (consent == 0) {
