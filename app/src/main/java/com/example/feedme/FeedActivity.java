@@ -27,13 +27,27 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
 
+/**
+ * Feed Activity
+ * Aktywność z mini grą karmienia pieska
+ * @author Mikołaj Szczęsny 175593 EiT T1
+ */
+
 
 public class FeedActivity extends AppCompatActivity {
 
-
-    private long startBoneTime = 1500;
-    private long boneTime = 1500;
-    private long feedTime = 10000;
+    /**
+     * czas w milisekundach nowej pozycji kości lub zębatki
+     */
+    private long startBoneTime;
+    /**
+     * czas w milisekundach nowej pozycji kości lub zębatki
+     */
+    private long boneTime;
+    /**
+     * długość w milisekundach trwania minigry
+     */
+    private long feedTime;
 
 
     private Button mBtGoBack;
@@ -42,8 +56,13 @@ public class FeedActivity extends AppCompatActivity {
     private TextView testView;
     private TextView pointsView;
 
-
+    /**
+     * zmienna radnomowa od której zależy czy bedzie kość czy zębatka
+     */
     public int g;
+    /**
+     * ilość zebranych punktów które potem zamieniają sie w pokarm dla pieska
+     */
     public int punkty = 0;
 
     private CountDownTimer boneCountdown;
@@ -51,6 +70,11 @@ public class FeedActivity extends AppCompatActivity {
     private static final Integer[] mImageIds =
             { R.drawable.bone, R.drawable.gear, };
 
+    /**
+     * przy inicjalizacji aktywności wybieramy czasy zależne od poziomu zadowolenia zwierzątka,
+     * to znaczy ze im mniejszy poziom happy tym gra jest krótsza i szybciej randomizują sie pozycje kości
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +127,11 @@ public class FeedActivity extends AppCompatActivity {
                 finish();
             }
         });
-
+        /**
+         * jeśli klikniemy na obrazek kości to dodają się punkty
+         * jeśli klikniemy na obrazek zębatki to odejmują się punkty
+         * jeśli klikniem na ten imageview to wybierzemy za każdym razem nową pozycję kolejnego obrazka
+         */
         feedImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,6 +152,9 @@ public class FeedActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * inicjalizacja count down timera czasu trwania całej aktywności, po jego zakończeniu punkty zebrane są wysyłane do głównej aktywności
+     */
     private void countDown() {
         countdown = new CountDownTimer(feedTime, 1000) {
             @Override
@@ -140,6 +171,10 @@ public class FeedActivity extends AppCompatActivity {
             }
         }.start();
     }
+
+    /**
+     * inizacja timera czasu randomizacji nowej pozycji kości
+     */
     private void startTimer() {
         boneCountdown = new CountDownTimer(boneTime, 1000) {
 
@@ -157,12 +192,20 @@ public class FeedActivity extends AppCompatActivity {
             }
         }.start();
     }
+
+    /**
+     * restartuje licznik wyboru nowej pozycji kości
+     */
     private void restartTimer() {
         boneCountdown.cancel();
         boneTime = startBoneTime;
         startTimer();
 
     }
+
+    /**
+     * odświeżenie liczników
+     */
     private void updateText() {
         int time = (int) (feedTime / 1000);
         String timeLeftFormatted = String.format(Locale.getDefault(), "%03d", time);
@@ -171,6 +214,10 @@ public class FeedActivity extends AppCompatActivity {
         pointsView.setText(punktyFormatted);
     }
 
+    /**
+     * nowa randomowa lokacja jak i rotacja kolejnego obrazka na bazie animacji o 0 czasie trwania
+     *
+     */
     private void newLocation() {
         final DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
@@ -202,6 +249,10 @@ public class FeedActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * za każdym uruchomieniem aktywności wybierana jest randomowa lokacja
+     * i rozpoczynany jest licznik czasu trwania aktywności
+     */
     @Override
     protected void onStart() {
         super.onStart();

@@ -8,11 +8,28 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class ReplayActivity extends AppCompatActivity {
+/**
+ * Replay Acitvity
+ * Aktywność z ekranem końca gry
+ * @author Mikołaj Szczęsny 175593 EiT T1
+ */
 
+public class ReplayActivity extends AppCompatActivity {
+    /**
+     * przycisk powtórzenia gry
+     */
     private Button rep;
+    /**
+     * zmienna z pewną funkcjonalnością niewykorzystana
+     */
     int consent;
 
+    /**
+     * Na ekranie pokazuje się napis w zależnosci pozytywnego lub negatywnego zakończenia gry
+     * z głownej aktywnosci przesyłana jest liczba w zależności od zakończenia i tutaj w tej zależnosci
+     * wyświetla się odpowiedni napis
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
