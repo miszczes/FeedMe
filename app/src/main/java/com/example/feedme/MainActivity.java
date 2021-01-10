@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Ilość milisekund do zakończenia partii gry
      */
-    private static final long START_TIME_IN_MILLIS = 1555200000;
+    private static final long START_TIME_IN_MILLIS = 120000;
     //1555200000
     /**
      * tag do log.v
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * ilość zagrań w minigrę
      */
-    int obiad_count = 0;
+    int obiad_count;
     /**
      * text wiev z głównym licznikiem czasu
      */
@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        obiad_count = 0;
 
 
 
@@ -220,6 +221,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        // przycisk do karmienia sprawdza czy nie przesycie ponad 100
         mEat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -279,10 +281,10 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             if(resultCode == RESULT_OK){
-                Toast.makeText(MainActivity.this, "Otrzymałeś " + obiad +  "posiłków!",
-                        Toast.LENGTH_SHORT).show();
                 // po każdym poprawnym zakonczeniu aktywności feed activity metoda dodaje do zmiennej obiad ilośc punktów zdobytych w aktywnosci
                 obiad = obiad + data.getIntExtra("punkty", 0);
+                Toast.makeText(MainActivity.this, "Otrzymałeś " + obiad +  " posiłków!",
+                        Toast.LENGTH_SHORT).show();
                 Log.v(TAG, "obiad: " + obiad);
                 //karmienie(obiad);
                 if(obiad > 0){
@@ -291,7 +293,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 String obiadCountFormatted = String.format(Locale.getDefault(), "%02d", obiad);
                 obiadTextView.setText(obiadCountFormatted);
-                obiad_count = obiad_count + data.getIntExtra("iloscObiadow", 0);
+                //ilość zagrań w grę
+                obiad_count++;
 
             }
         }
@@ -311,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
      * Metoda wykonywana po kliknięciu przycisku nakarmienia
      * Sprawdza czy po nakarmieniu wartość licznika głodu i zabawy nie przepełni się
      * @param obiad parametr wielkości jednorazowego nakarmienia o wartości zebrane w minigrze
+     * @return wartość punktów do nakarmienia
      * glod - zmienna wartości nakarmienia
      * entertainment - zmienna wartości zabawy
      */
@@ -490,7 +494,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     *  Metoda odpowiedzialna za transwer wszystkich zmiennych liczbowych do typu String i wyświetlenie ich w odpowiednim TextView
+     *  Metoda odpowiedzialna za transfer wszystkich zmiennych liczbowych do typu String i wyświetlenie ich w odpowiednim TextView
      */
     private void updateCountDownText() {
         int time = (int) (mTimeLeftInMillis / 1000);
@@ -554,6 +558,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         sto = System.currentTimeMillis();
         c_glod = glod;
+       // int cCdinner = (int) obiad_count;
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
 
@@ -567,7 +572,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putFloat("closeglod", c_glod);
         editor.putFloat("closeenter", entertainment);
         editor.putFloat("closesleep", sleep);
-        editor.putInt("iloscobiad", obiad_count);
+        editor.putInt("ilosczagran", obiad_count);
 
         //Log.v(TAG, "c_hidden: " + hidden);
 
@@ -587,10 +592,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        UkryjOpcjeDeweloperskie();
+       // UkryjOpcjeDeweloperskie();
         //startTimer();
 
         //hidden = true;
+
+        //odczytanie zmiennych z editora
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
 
         mTimeLeftInMillis = prefs.getLong("millisLeft", START_TIME_IN_MILLIS);
@@ -603,7 +610,7 @@ public class MainActivity extends AppCompatActivity {
        // boolean c_hidden = prefs.getBoolean("ukryte", true);
         float c_happy = prefs.getFloat("happi", 100);
 
-        obiad_count = prefs.getInt("iloscobiad", 0);
+        obiad_count = prefs.getInt("ilosczagran", 0);
 
       //  Log.v(TAG, "obiad: " + c_obiad);
        // glod = glod + c_obiad;
@@ -611,7 +618,7 @@ public class MainActivity extends AppCompatActivity {
         //dinner_count = 0;
         updateCountDownText();
         updateButtons();
-
+        //zasady przeliczane po uruchomieniu aplikacji
         if (mTimerRunning) {
 
             mEndTime = prefs.getLong("endTime", 0);
@@ -663,7 +670,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 startTimer();
             }
-            if (timePassed > 40){
+            if (timePassed > 25){
                // pauseTimer();
 
                 mTimerRunning =false;
@@ -675,6 +682,7 @@ public class MainActivity extends AppCompatActivity {
         }else if (consent == 0) {
             startTimer();
         }
+        //zmiana randomowo obrazka
         if(c_sleeping == false){
             Random rand = new Random();
             int pose = rand.nextInt(4);
