@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void otworzKarmienie() {
 
-        if (happy > 70){
+        if (happy > 80){
             Intent intent = new Intent(this, FeedActivity.class);
             intent.putExtra(DIFFICULTY, 7);
             startActivityForResult(intent, 1);
