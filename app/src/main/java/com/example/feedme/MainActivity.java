@@ -314,7 +314,6 @@ public class MainActivity extends AppCompatActivity {
      * Metoda wykonywana po kliknięciu przycisku nakarmienia
      * Sprawdza czy po nakarmieniu wartość licznika głodu i zabawy nie przepełni się
      * @param obiad parametr wielkości jednorazowego nakarmienia o wartości zebrane w minigrze
-     * @return wartość punktów do nakarmienia
      * glod - zmienna wartości nakarmienia
      * entertainment - zmienna wartości zabawy
      */
