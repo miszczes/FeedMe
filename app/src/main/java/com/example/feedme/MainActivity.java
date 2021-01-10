@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Ilość milisekund do zakończenia partii gry
      */
-    private static final long START_TIME_IN_MILLIS = 120000;
+    private static final long START_TIME_IN_MILLIS = 60000;
     //1555200000
     /**
      * tag do log.v
@@ -257,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, FeedActivity.class);
             intent.putExtra(DIFFICULTY, 7);
             startActivityForResult(intent, 1);
-        } else if(happy <= 70 && happy > 30){
+        } else if(happy <= 80 && happy > 30){
             Intent intent = new Intent(this, FeedActivity.class);
             intent.putExtra(DIFFICULTY, 3);
             startActivityForResult(intent, 1);
