@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Ilość milisekund do zakończenia partii gry
      */
-    private static final long START_TIME_IN_MILLIS = 60000;
+    private static final long START_TIME_IN_MILLIS = 1555200000;
     //1555200000
     /**
      * tag do log.v
@@ -669,7 +669,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 startTimer();
             }
-            if (timePassed > 25){
+            if (timePassed > 259200){
                // pauseTimer();
 
                 mTimerRunning =false;
